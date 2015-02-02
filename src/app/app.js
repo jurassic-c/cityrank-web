@@ -13,12 +13,23 @@ angular.module( 'ngBoilerplate', [
 .run( function run () {
 })
 
-.controller( 'AppCtrl', function AppCtrl ( $scope, $location ) {
+.controller( 'AppCtrl', function AppCtrl ( $scope, $location, $modal ) {
   $scope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams){
     if ( angular.isDefined( toState.data.pageTitle ) ) {
-      $scope.pageTitle = toState.data.pageTitle + ' | ngBoilerplate' ;
+      $scope.pageTitle = toState.data.pageTitle + ' | City' ;
+      $scope.open = function (size) {
+
+        var modalInstance = $modal.open({
+          templateUrl: 'loginModal.html',
+          controller: 'LoginController'
+        });
+      };
     }
   });
+})
+
+.controller('LoginController', function LoginController($scope, $rootScope) {
+
 })
 
 ;

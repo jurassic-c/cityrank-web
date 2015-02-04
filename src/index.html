@@ -31,6 +31,11 @@
     <script type="text/javascript" src="https://apis.google.com/js/plusone.js">
       { "parsetags": "explicit" }
     </script>
+
+    <script type="text/javascript">
+      ENV = "<%= env %>";
+      REST_BASE_URL = "<%= restBaseUrl %>";
+    </script>
   </head>
   <body>
     <div class="container">
@@ -63,9 +68,20 @@
             </li>
           </ul>
           <ul class="nav navbar-nav pull-right  ">
-            <li>
-              <button ng-click="open()" class="btn btn-primary">
+            <li ng-hide="authenticated">
+              <button ng-click="loginPopup()" class="btn btn-primary">
                 Login
+              </button>
+            </li>
+            <li ng-show="authenticated">
+              <a href ui-sref="user">
+                <i class="fa fa-person"></i>
+                {{user.name}}
+              </a>
+            </li>
+            <li ng-show="authenticated">
+              <button ng-click="logout()" class="btn btn-primary">
+                Logout
               </button>
             </li>
           </ul>
@@ -78,28 +94,29 @@
       <script type="text/ng-template" id="loginModal.html">
           <div class="modal-content">
             <div class="modal-header">
+              <button class="btn-link pull-right" ng-click="close()"><i class="fa fa-times"></i></button>
               <h4>Login</h4>
             </div>
             <div class="modal-body">
               <form role="form">
                 <div class="form-group" collapse="code_request_sent">
                   <label class="sr-only control-label">Phone or Email</label>
-                  <input class="form-control" type="text" placeholder="Phone or Email" >
+                  <input class="form-control" type="text" ng-model="login_user.phone_or_email" placeholder="Phone or Email" >
                 </div>
                 <div class="form-group" collapse="!use_password">
                   <label class="sr-only control-label">Password</label>
-                  <input class="form-control" type="password" placeholder="Password" >
+                  <input class="form-control" type="password" ng-model="login_user.password" placeholder="Password" >
                 </div>
                 <div class="form-group" collapse="!code_request_sent">
                   <label class="sr-only control-label">Login Code</label>
-                  <input class="form-control" type="text" placeholder="Login Code" >
+                  <input class="form-control" type="text" ng-model="login_user.login_code" placeholder="Login Code" >
                 </div>
                 <div class="form-group">
                   <div collapse="use_password ||code_request_sent">
-                    <button class="btn btn-info" ng-click="send_code_request()">Send Code</button>
-                    <button class="btn btn-info" ng-click="choose_use_password()">Enter Password</button>
+                    <button class="btn btn-info" ng-disabled="use_password || code_request_sent" ng-click="send_code_request()">Send Code</button>
+                    <button class="btn btn-info" ng-disabled="use_password || code_request_sent" ng-click="choose_use_password()">Enter Password</button>
                   </div>
-                  <button class="btn btn-info" collapse="!show_login_button">Login</button>
+                  <button class="btn btn-info" ng-click="login()" collapse="!show_login_button">Login</button>
                 </div>
               </form>
             </div>

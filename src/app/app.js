@@ -3,35 +3,47 @@ angular.module( 'ngBoilerplate', [
   'templates-common',
   'ngBoilerplate.home',
   'ngBoilerplate.about',
-  'ui.router'
+  'ui.router',
+  'ngResource',
+  'appStorage',
+  'UserModule'
 ])
 
 .config( function myAppConfig ( $stateProvider, $urlRouterProvider ) {
   $urlRouterProvider.otherwise( '/home' );
 })
 
-.run( function run () {
+.run( function run ($rootScope, $modal) {
+  $rootScope.authenticated = false;
+  $rootScope.user = null;
+
+  $rootScope.loginPopup = function () {
+
+    var modalInstance = $modal.open({
+      templateUrl: 'loginModal.html',
+      controller: 'LoginController'
+    });
+  };
+
+  $rootScope.logout = function() {
+    $rootScope.authenticated = false;
+    $rootScope.user = null;
+  };
 })
 
 .controller( 'AppCtrl', function AppCtrl ( $scope, $location, $modal ) {
   $scope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams){
     if ( angular.isDefined( toState.data.pageTitle ) ) {
       $scope.pageTitle = toState.data.pageTitle + ' | City' ;
-      $scope.open = function (size) {
-
-        var modalInstance = $modal.open({
-          templateUrl: 'loginModal.html',
-          controller: 'LoginController'
-        });
-      };
     }
   });
 })
 
-.controller('LoginController', function LoginController($scope, $rootScope) {
+.controller('LoginController', ['$scope', '$rootScope', 'User', '$modalInstance', function LoginController($scope, $rootScope, User, $modalInstance) {
   $scope.code_request_sent = false;
   $scope.use_password = false;
   $scope.show_login_button = false;
+  $scope.login_user = {};
   $scope.send_code_request = function() {
     $scope.code_request_sent = true;
     $scope.show_login_button = true;
@@ -41,7 +53,27 @@ angular.module( 'ngBoilerplate', [
     $scope.use_password = true;
     $scope.show_login_button = true;
   };
-})
+
+  $scope.close = function() {
+    $modalInstance.close();
+  };
+
+  $scope.login = function() {
+    console.log($scope.login_user);
+    User.authenticate($scope.login_user).$promise.then(
+      // Success
+      function(data) {
+        $rootScope.authenticated = true;
+        $rootScope.user = data.user;
+        $modalInstance.close();
+      },
+      // Failure
+      function(data) {
+        console.log(data);
+      }
+    );
+  };
+}])
 
 ;
 

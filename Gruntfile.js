@@ -18,6 +18,7 @@ module.exports = function ( grunt ) {
   grunt.loadNpmTasks('grunt-karma');
   grunt.loadNpmTasks('grunt-ngmin');
   grunt.loadNpmTasks('grunt-html2js');
+  grunt.loadNpmTasks('grunt-env');
 
   /**
    * Load in our build configuration file.
@@ -34,6 +35,17 @@ module.exports = function ( grunt ) {
      * version. It's already there, so we don't repeat ourselves here.
      */
     pkg: grunt.file.readJSON("package.json"),
+
+    env: {    
+      all: { 
+        options: {
+          add: {
+            REST_BASE_URL: 'http://localwifi.com:3000',
+            ENV: 'development'
+          }
+        }
+      }
+    },
 
     /**
      * The banner is the comment that is placed at the top of our compiled 
@@ -554,7 +566,7 @@ module.exports = function ( grunt ) {
   grunt.registerTask( 'build', [
     'clean', 'html2js', 'jshint', 'coffeelint', 'coffee', 'less:build',
     'concat:build_css', 'copy:build_app_assets', 'copy:build_vendor_assets',
-    'copy:build_appjs', 'copy:build_vendorjs', 'index:build', 'karmaconfig',
+    'copy:build_appjs', 'copy:build_vendorjs', 'env', 'index:build', 'karmaconfig',
     'karma:continuous' 
   ]);
 
@@ -563,7 +575,7 @@ module.exports = function ( grunt ) {
    * minifying your code.
    */
   grunt.registerTask( 'compile', [
-    'less:compile', 'copy:compile_assets', 'ngmin', 'concat:compile_js', 'uglify', 'index:compile'
+    'less:compile', 'copy:compile_assets', 'ngmin', 'concat:compile_js', 'uglify', 'env', 'index:compile'
   ]);
 
   /**
@@ -605,7 +617,9 @@ module.exports = function ( grunt ) {
           data: {
             scripts: jsFiles,
             styles: cssFiles,
-            version: grunt.config( 'pkg.version' )
+            version: grunt.config( 'pkg.version' ),
+            restBaseUrl: process.env.REST_BASE_URL,
+            env: process.env.ENV
           }
         });
       }

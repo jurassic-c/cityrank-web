@@ -82,13 +82,24 @@
             </div>
             <div class="modal-body">
               <form role="form">
-                <div class="form-group">
+                <div class="form-group" collapse="code_request_sent">
                   <label class="sr-only control-label">Phone or Email</label>
                   <input class="form-control" type="text" placeholder="Phone or Email" >
                 </div>
+                <div class="form-group" collapse="!use_password">
+                  <label class="sr-only control-label">Password</label>
+                  <input class="form-control" type="password" placeholder="Password" >
+                </div>
+                <div class="form-group" collapse="!code_request_sent">
+                  <label class="sr-only control-label">Login Code</label>
+                  <input class="form-control" type="text" placeholder="Login Code" >
+                </div>
                 <div class="form-group">
-                  <button class="btn btn-info">Send Code</button>
-                  <button class="btn btn-info">Enter Password</button>
+                  <div collapse="use_password ||code_request_sent">
+                    <button class="btn btn-info" ng-click="send_code_request()">Send Code</button>
+                    <button class="btn btn-info" ng-click="choose_use_password()">Enter Password</button>
+                  </div>
+                  <button class="btn btn-info" collapse="!show_login_button">Login</button>
                 </div>
               </form>
             </div>

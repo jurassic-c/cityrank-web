@@ -1,0 +1,214 @@
+<div ng-hide="authenticated">
+	<h3>Please sign in.</h3>
+</div>
+<div ng-show="authenticated">
+	<h1>Report a Wifi Hotspot</h1>
+	<hr>
+
+	<h3>Location</h3>
+
+	<form role="form">
+		<div class="row">
+			<div class="form-group">
+				<div class="col-sm-3">
+					<label for="hotspot_report_name" class="control-label">Where are you?</label>
+				</div>
+				<div class="col-sm-9">
+					<input id="hotspot_report_name" class="form-control" type="text" placeholder="Ex. Jim's Coffee House" ng-model="hotspot_report.name">
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-3">
+				<label for="hotspot_report_price_type">Cost</label>
+			</div>
+			<div class="col-sm-9">
+				<span class="dropdown">
+					<button class="btn btn-info dropdown-toggle">{{type_labels[hotspot_report.price_type].label||'Free'}} <span class="caret"></span></button>
+					<ul class="dropdown-menu">
+						<li><a class="" ng-repeat="price in type_labels" ng-click="hotspot_report.price_type=price.type" href>{{price.label}}</a></li>
+					</ul>
+				</span>
+				<span ng-hide="hotspot_report.price_type.indexOf('free') > -1" >
+					<span class="dropdown">
+						<button class="btn btn-xs btn-info dropdown-toggle">{{currency}} <span class="caret"></span></button>
+						<ul class="dropdown-menu">
+							<li><a class="" ng-click="currency='MX'" href>MX</a></li>
+							<li><a class="" ng-click="currency='USD'" href>USD</a></li>
+						</ul>
+					</span>
+					<input size="6" class="" ng-model="hotspot_report.price" type="text" placeholder="5.50">
+				</span>
+			</div>
+		</div>
+	</form>
+
+	<div collapse="hotspot_report.report_type!=''" id="report_type_select">
+		<h3>How much info can you give us?</h3>
+		<button class="btn btn-primary" ng-click="hotspot_report.report_type='basic'">Basic Info</button>
+		<button class="btn btn-default" ng-click="hotspot_report.report_type='advanced'">I know my stuff</button>
+	</div>
+
+	<div id="basic_report" collapse="hotspot_report.report_type!='basic'">
+		<hr>
+		<h3>Connectivity</h3>
+		<p>How easy is it to get connected to the Wi-Fi. Once you're connected, do you stay that way? Or is it a struggle?</p>
+		<span>
+			<a href ng-click="hotspot_report.connectivity_score=1"><i tooltip="Can't connect!" class="fa fa-star"></i></a>
+			<a href ng-click="hotspot_report.connectivity_score=2"><i tooltip="Trouble connecting. Drops connection" class="fa fa-star" ng-class="{'text-muted': hotspot_report.connectivity_score<=1}"></i></a>
+			<a href ng-click="hotspot_report.connectivity_score=3"><i tooltip="Usually Connects. Sometimes drops connection" class="fa fa-star" ng-class="{'text-muted': hotspot_report.connectivity_score<=2}"></i></a>
+			<a href ng-click="hotspot_report.connectivity_score=4"><i tooltip="Connects ok. Rarely disconnects" class="fa fa-star" ng-class="{'text-muted': hotspot_report.connectivity_score<=3}"></i></a>
+			<a href ng-click="hotspot_report.connectivity_score=5"><i tooltip="Connects. Stays connected" class="fa fa-star" ng-class="{'text-muted': hotspot_report.connectivity_score<=4}"></i></a>
+		</span>
+		<h3>Speed</h3>
+		<p>Once you're connected. How is the speed? Can you breeze through a video chat? Or is it a struggle just to load a picture?</p>
+		<span>
+			<a href ng-click="hotspot_report.speed_score=1"><i tooltip="Sloooooow! Basically Unusable." class="fa fa-star"></i></a>
+			<a href ng-click="hotspot_report.speed_score=2"><i tooltip="Ok for checking email. Trouble browsing web." class="fa fa-star" ng-class="{'text-muted': hotspot_report.speed_score<=1}"></i></a>
+			<a href ng-click="hotspot_report.speed_score=3"><i tooltip="Usable. Spotty video. Can't do video chat." class="fa fa-star" ng-class="{'text-muted': hotspot_report.speed_score<=2}"></i></a>
+			<a href ng-click="hotspot_report.speed_score=4"><i tooltip="Most videos work. Video chat spotty." class="fa fa-star" ng-class="{'text-muted': hotspot_report.speed_score<=3}"></i></a>
+			<a href ng-click="hotspot_report.speed_score=5"><i tooltip="Movies and Video chat, no problem!" class="fa fa-star" ng-class="{'text-muted': hotspot_report.speed_score<=4}"></i></a>
+		</span>
+	</div>
+
+	<div id="advanced_report" collapse="hotspot_report.report_type!='advanced'">
+
+		<hr>
+		<h3>Basic Info and Speed</h3>
+
+		<form role="form">
+			<div class="row">
+				<div class="form-group">
+					<div class="col-sm-3">
+						<label for="hotspot_report_name" class="control-label">SSID (Signal Name)</label>
+					</div>
+					<div class="col-sm-9">
+						<input id="hotspot_report_ssid" class="form-control" type="text" placeholder="JimsCoffeeGuest" ng-model="hotspot_report.ssid">
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="form-group">
+					<div class="col-sm-3">
+						<label for="hotspot_report_name" class="control-label">Security</label>
+					</div>
+					<div class="col-sm-9">
+						<span class="dropdown">
+							<button class="btn btn-info dropdown-toggle">{{security_labels[hotspot_report.security_type].label||'None'}} <span class="caret"></span></button>
+							<ul class="dropdown-menu">
+								<li><a class="" ng-repeat="sec_type in security_labels" ng-click="hotspot_report.security_type=sec_type.type" href>{{sec_type.label}}</a></li>
+							</ul>
+						</span>
+
+						<span ng-hide="hotspot_report.security_type=='none'">
+							<label for="hotspot_report_password">Key:</label>
+							<input id="hotspot_report_password" class="" type="text" placeholder="xxxxxxx" ng-model="hotspot_report.password">
+						</span>
+					</div>
+				</div>
+			</div>
+		</form>
+
+		<form role="form">
+			<div class="row">
+				<div class="form-group">
+					<div class="col-sm-3">
+						<label for="hotspot_report_speedtest_link" class="control-label">Speedtest link</label>
+						<small><a href="http://speedtest.net" target="_blank">[From here]</a></small>
+					</div>
+					<div class="col-sm-9">
+						<input id="hotspot_report_speedtest_link" class="form-control" type="text" placeholder="http://..." ng-model="hotspot_report.speedtest_link">
+					</div>
+				</div>
+			</div>
+			<br>
+		</form>
+		<div class="row">
+			<div class="form-group">
+				<div class="col-sm-3">
+					<label for="hotspot_report_ping" class="control-label">Ping</label>
+				</div>
+				<div class="col-sm-6">
+					<form class="form-inline">
+						<input id="hotspot_report_ping" size="4" class="form-control" type="text" placeholder="60" ng-model="hotspot_report.ping"> ms
+					</form>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="form-group">
+				<div class="col-sm-3">
+					<label for="hotspot_report_dl_speed" class="control-label">Download Speed</label>
+				</div>
+				<div class="col-sm-6">
+					<form class="form-inline">
+						<input id="hotspot_report_dl_speed" class="form-control" type="text" placeholder="21" ng-model="hotspot_report.dl_speed">
+
+						<span class="dropdown">
+							<button class="btn btn-sm btn-info dropdown-toggle">{{hotspot_report.dl_speed_units||'Mpbs'}} <span class="caret"></span></button>
+							<ul class="dropdown-menu">
+								<li><a class="" ng-click="hotspot_report.dl_speed_units='Mbps'" href>Mbps</a></li>
+								<li><a class="" ng-click="hotspot_report.dl_speed_units='Kbps'" href>Kbps</a></li>
+							</ul>
+						</span>
+					</form>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-3">
+				<label for="hotspot_report_ul_speed" class="control-label">Upload Speed</label>
+			</div>
+			<div class="col-sm-6">
+				<form class="form-inline">
+					<input id="hotspot_report_ul_speed" class="form-control" type="text" placeholder="21" ng-model="hotspot_report.ul_speed">
+
+						<span class="dropdown">
+							<button class="btn btn-sm btn-info dropdown-toggle">{{hotspot_report.ul_speed_units||'Mpbs'}} <span class="caret"></span></button>
+							<ul class="dropdown-menu">
+								<li><a class="" ng-click="hotspot_report.ul_speed_units='Mbps'" href>Mbps</a></li>
+								<li><a class="" ng-click="hotspot_report.ul_speed_units='Kbps'" href>Kbps</a></li>
+							</ul>
+						</span>
+				</form>
+			</div>
+		</div>
+
+		<hr>
+		<h3>Common Issues</h3>
+		<form>
+			<div class="row">
+				<div class="col-sm-12">
+					<input type="checkbox" value="router_disconnect" ng-model="hotspot_report.router_disconnect">
+					<label for="hotspot_report_router_disconnect">Drops Wi-Fi connection</label>
+
+					<span class="dropdown">
+						<button ng-disabled="!hotspot_report.router_disconnect" class="btn btn-xs btn-info dropdown-toggle">{{frequency_labels[hotspot_report.router_disconnect_frequency].label||'Rarely'}} <span class="caret"></span></button>
+						<ul class="dropdown-menu">
+							<li><a class="" ng-repeat="freq in frequency_labels" ng-click="hotspot_report.router_disconnect_frequency=freq.idx" href>{{freq.label}}</a></li>
+						</ul>
+					</span>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-12">
+					<input type="checkbox" value="wan_disconnect" ng-model="hotspot_report.wan_disconnect">
+					<label for="hotspot_report_wan_disconnect">Wi-Fi Connected but Loses Internet Connection</label>
+
+					<span class="dropdown">
+						<button ng-disabled="!hotspot_report.wan_disconnect" class="btn btn-xs btn-info dropdown-toggle">{{frequency_labels[hotspot_report.wan_disconnect_frequency].label||'Rarely'}} <span class="caret"></span></button>
+						<ul class="dropdown-menu">
+							<li><a class="" ng-repeat="freq in frequency_labels" ng-click="hotspot_report.wan_disconnect_frequency=freq.idx" href>{{freq.label}}</a></li>
+						</ul>
+					</span>
+				</div>
+			</div>
+		</form>
+	</div>
+
+	<div collapse="hotspot_report.report_type==''">
+		<hr>
+		<button class="btn btn-primary" ng-click="submit_report()">Submit</button>
+		<button class="btn btn-default" ng-click="cancel_report()">Cancel</button>
+	</div>
+</div>

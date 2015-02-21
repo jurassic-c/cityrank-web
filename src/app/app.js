@@ -4,6 +4,7 @@ angular.module( 'ngBoilerplate', [
   'ngBoilerplate.home',
   'ngBoilerplate.about',
   'citrank.add',
+  'citrank.map',
   'ui.router',
   'ngResource',
   'appStorage',
